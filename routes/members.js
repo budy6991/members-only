@@ -1,6 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const user_controller = require("../controllers/userController");
+const message_controller = require("../controllers/messageController");
+
+// Message routes
+
+router.get("/", message_controller.index);
 
 // User routes
 
