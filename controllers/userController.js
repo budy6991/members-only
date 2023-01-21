@@ -33,7 +33,7 @@ exports.sign_up_post = [
       password: req.body.password,
       membership: "user",
     });
-    console.log(req);
+
     if (!errors.isEmpty()) {
       res.render("sign-up-form", {
         title: "Sign up to the app",
