@@ -7,7 +7,6 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 exports.index = (req, res, next) => {
-  console.log(req.user);
   res.render("index", { user: req.user });
 };
 
@@ -33,26 +32,30 @@ exports.sign_up_post = [
   body("password", "Password is required").trim().isLength({ min: 1 }).escape(),
   (req, res, next) => {
     const errors = validationResult(req);
-    const user = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      username: req.body.username,
-      password: req.body.password,
-      membership: "user",
-    });
-
-    if (!errors.isEmpty()) {
-      res.render("sign-up-form", {
-        title: "Sign up to the app",
-        errors: errors.array(),
-      });
-    }
-
-    user.save((err) => {
+    bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       if (err) {
         return next(err);
       }
-      res.redirect("/");
+      const user = new User({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        username: req.body.username,
+        password: hashedPassword,
+        membership: "user",
+      });
+      if (!errors.isEmpty()) {
+        res.render("sign-up-form", {
+          title: "Sign up to the app",
+          errors: errors.array(),
+        });
+      }
+
+      user.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.redirect("/");
+      });
     });
   },
 ];
