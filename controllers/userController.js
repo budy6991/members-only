@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Message = require("../models/message");
 const { body, validationResult, check } = require("express-validator");
+const flash = require("express-flash-messages");
 const bcrypt = require("bcryptjs");
 const async = require("async");
 const passport = require("passport");
@@ -30,15 +31,6 @@ exports.sign_up_post = [
     .isLength({ min: 1 })
     .escape(),
   body("password", "Password is required").trim().isLength({ min: 5 }).escape(),
-  body("confirmPassword")
-    .trim()
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        res.render("sign-up-form");
-        throw new Error("Passwords do not match");
-      }
-      return true;
-    }),
   (req, res, next) => {
     const errors = validationResult(req);
     console.log("ERRORS HERE", errors);
@@ -71,12 +63,23 @@ exports.sign_up_post = [
 ];
 
 exports.log_in_get = (req, res, next) => {
-  res.render("log-in");
+  const flashMessages = res.locals.getMessages();
+  console.log("flash", flashMessages);
+
+  if (flashMessages.error) {
+    res.render("log-in", {
+      showErrors: true,
+      errors: flashMessages.error,
+    });
+  } else {
+    res.render("log-in");
+  }
 };
 
 exports.log_in_post = passport.authenticate("local", {
   successRedirect: "/",
   failureRedirect: "/log-in",
+  failureFlash: true,
 });
 
 exports.log_out = (req, res, next) => {
