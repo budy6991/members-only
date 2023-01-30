@@ -38,8 +38,6 @@ app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
 
 app.use(passport.authenticate("session"));
 
-app.use(flash());
-
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/members-only", membersRouter);

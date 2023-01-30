@@ -39,9 +39,13 @@ passport.deserializeUser(function (id, done) {
 
 // Message routes
 
-router.get("/", message_controller.create_message_get);
+router.get("/create-message", message_controller.create_message_get);
+
+router.post("/create-message", message_controller.create_message_post);
 
 // User routes
+
+router.get("/", user_controller.index);
 
 router.get("/sign-up", user_controller.sign_up_get);
 

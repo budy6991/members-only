@@ -8,6 +8,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
 exports.index = (req, res, next) => {
+  console.log(req.user);
   res.render("index", { user: req.user });
 };
 
@@ -33,7 +34,7 @@ exports.sign_up_post = [
   body("password", "Password is required").trim().isLength({ min: 5 }).escape(),
   (req, res, next) => {
     const errors = validationResult(req);
-    console.log("ERRORS HERE", errors);
+
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       if (err) {
         return next(err);
@@ -63,23 +64,13 @@ exports.sign_up_post = [
 ];
 
 exports.log_in_get = (req, res, next) => {
-  const flashMessages = res.locals.getMessages();
-  console.log("flash", flashMessages);
-
-  if (flashMessages.error) {
-    res.render("log-in", {
-      showErrors: true,
-      errors: flashMessages.error,
-    });
-  } else {
-    res.render("log-in");
-  }
+  console.log(req.user);
+  res.render("log-in");
 };
 
 exports.log_in_post = passport.authenticate("local", {
   successRedirect: "/",
   failureRedirect: "/log-in",
-  failureFlash: true,
 });
 
 exports.log_out = (req, res, next) => {
