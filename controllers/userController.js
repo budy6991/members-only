@@ -6,6 +6,11 @@ const async = require("async");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
+exports.index = (req, res, next) => {
+  console.log(req.user);
+  res.render("index", { user: req.user });
+};
+
 exports.sign_up_get = (req, res, next) => {
   res.render("sign-up-form", {
     title: "Sign Up to the app",
@@ -52,7 +57,20 @@ exports.sign_up_post = [
   },
 ];
 
-exports.log_in = passport.authenticate("local", {
+exports.log_in_get = (req, res, next) => {
+  res.render("log-in");
+};
+
+exports.log_in_post = passport.authenticate("local", {
   successRedirect: "/",
-  failureRedirect: "/",
+  failureRedirect: "/log-in",
 });
+
+exports.log_out = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
