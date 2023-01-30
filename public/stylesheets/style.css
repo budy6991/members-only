@@ -1,5 +1,24 @@
-.form-controller {
+.form-control {
+  display: flex;
+  align-self: center;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  border: 1px solid white;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 4px 1px gray;
+}
+.form-control input {
   display: flex;
   flex-direction: column;
-  background-color: red;
+}
+.form-control button {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  justify-self: center;
 }/*# sourceMappingURL=style.css.map */

@@ -1,5 +1,20 @@
-.form-controller {
+.form-control {
   display: flex;
-  flex-direction: column;
-  background-color: red;
+  align-self: center;
+  width: fit-content;
+  height: fit-content;
+
+  border: 1px solid white;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 2px 2px 4px 1px gray;
+  input {
+    display: flex;
+
+    flex-direction: column;
+  }
+  button {
+    width: fit-content;
+    justify-self: center;
+  }
 }

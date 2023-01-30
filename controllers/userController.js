@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const Message = require("../models/message");
-const { body, validationResult } = require("express-validator");
+const { body, validationResult, check } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const async = require("async");
 const passport = require("passport");
@@ -29,9 +29,19 @@ exports.sign_up_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("password", "Password is required").trim().isLength({ min: 1 }).escape(),
+  body("password", "Password is required").trim().isLength({ min: 5 }).escape(),
+  body("confirmPassword")
+    .trim()
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        res.render("sign-up-form");
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
   (req, res, next) => {
     const errors = validationResult(req);
+    console.log("ERRORS HERE", errors);
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       if (err) {
         return next(err);
