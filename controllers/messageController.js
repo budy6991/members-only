@@ -4,5 +4,6 @@ const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 
 exports.index = (req, res, next) => {
-  res.render("index", { title: "Members Only Application!", user: req.user });
+  console.log(req.user);
+  res.render("index", { user: req.user });
 };

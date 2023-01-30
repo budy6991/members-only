@@ -5,17 +5,19 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
-    <h1>Welcome to members only</h1>
-
+    <% if (user) {%>
+    <h1>WELCOME BACK <%= user.username %></h1>
+    <a href="/log-out">LOG OUT</a>
+    <% } else { %>
     <h2>Please log in</h2>
-    <form action="/log-in" method="POST">
+    <form action="/members-only/log-in" method="POST">
       <label for="username">Username</label>
       <input name="username" placeholder="username" type="text" />
       <label for="password">Password</label>
       <input name="password" type="password" />
       <button>Log In</button>
     </form>
-
     <a href="/members-only/sign-up">Sign up</a>
+    <%}%>
   </body>
 </html>

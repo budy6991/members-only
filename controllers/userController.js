@@ -42,7 +42,7 @@ exports.sign_up_post = [
         errors: errors.array(),
       });
     }
-    console.log(req.user);
+
     user.save((err) => {
       if (err) {
         return next(err);
@@ -51,3 +51,8 @@ exports.sign_up_post = [
     });
   },
 ];
+
+exports.log_in = passport.authenticate("local", {
+  successRedirect: "/",
+  failureRedirect: "/",
+});
