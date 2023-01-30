@@ -3,6 +3,8 @@ const Message = require("../models/message");
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const async = require("async");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
 exports.sign_up_get = (req, res, next) => {
   res.render("sign-up-form", {
