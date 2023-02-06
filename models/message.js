@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const { DateTime } = require("luxon");
 
+// To add author 
+
 const MessageSchema = new Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
