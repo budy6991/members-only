@@ -1,21 +1,17 @@
 require("dotenv").config();
-var createError = require("http-errors");
-var express = require("express");
+const createError = require("http-errors");
+const express = require("express");
 const axios = require("axios");
 const flash = require("express-flash-messages");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 const session = require("express-session");
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const User = require("./models/user");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var membersRouter = require("./routes/members");
+const membersRouter = require("./routes/members");
 
-var app = express();
+const app = express();
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
@@ -31,25 +27,23 @@ app.set("view engine", "ejs");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser("cats"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(session({ secret: "cats", resave: true, saveUninitialized: true }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(passport.authenticate("session"));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
-app.use("/members-only", membersRouter);
+app.use("/", membersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(express.urlencoded({ extended: false }));
 
