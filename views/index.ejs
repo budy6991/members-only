@@ -7,12 +7,12 @@
   <body>
     <% if (user) {%>
     <h1>Welcome <%= user.username %></h1>
-    <a href="/members-only/create-message">Create a message</a>
-    <a href="/members-only/log-out">Log out</a>
+    <a href="/create-message">Create a message</a>
+    <a href="/log-out">Log out</a>
     <% } else { %>
     <h1>Welcome to Members Only Application</h1>
-    <a href="/members-only/log-in">Log in</a>
-    <a href="/members-only/sign-up">Sign up</a>
+    <a href="/log-in">Log in</a>
+    <a href="/sign-up">Sign up</a>
     <%}%>
   </body>
 </html>

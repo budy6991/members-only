@@ -5,7 +5,6 @@ const flash = require("express-flash-messages");
 const bcrypt = require("bcryptjs");
 const async = require("async");
 const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 
 exports.index = (req, res, next) => {
   console.log(req.user);
@@ -34,7 +33,6 @@ exports.sign_up_post = [
   body("password", "Password is required").trim().isLength({ min: 5 }).escape(),
   (req, res, next) => {
     const errors = validationResult(req);
-
     bcrypt.hash(req.body.password, 10, (err, hashedPassword) => {
       if (err) {
         return next(err);
