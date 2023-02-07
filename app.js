@@ -24,12 +24,6 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 // Import routes
 
 const app = express();
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-const membersRouter = require("./routes/members");
-
-app.use("/", membersRouter);
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -37,11 +31,18 @@ app.set("view engine", "ejs");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser("cats"));
-
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    secret: "keyboard car",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(passport.authenticate("session"));
 
 // Set up passport
 
@@ -59,6 +60,10 @@ passport.use(
   })
 );
 
+const membersRouter = require("./routes/members");
+
+app.use("/", membersRouter);
+
 // Serialize/ Deserialize user
 
 passport.serializeUser((user, done) => done(null, user.id));
@@ -68,7 +73,6 @@ passport.deserializeUser((id, done) =>
 
 // Set up session and initialize passport
 
-app.use(session({ secret: "dogs", resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
@@ -76,7 +80,13 @@ app.use(express.urlencoded({ extended: false }));
 // Access req.user globally
 
 app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
+  app.locals.currentUser = req.user;
+});
+
+// Catch 404 and forward to error handler
+
+app.use(function (req, res, next) {
+  next(createError(404));
 });
 
 // error handler

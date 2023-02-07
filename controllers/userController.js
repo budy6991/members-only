@@ -7,7 +7,6 @@ const async = require("async");
 const passport = require("passport");
 
 exports.index = (req, res, next) => {
-  console.log(req.user);
   res.render("index", { user: req.user });
 };
 
@@ -44,6 +43,7 @@ exports.sign_up_post = [
         password: hashedPassword,
         membership: "user",
       });
+      console.log(user);
       if (!errors.isEmpty()) {
         res.render("sign-up-form", {
           title: "Sign up to the app",
@@ -62,7 +62,6 @@ exports.sign_up_post = [
 ];
 
 exports.log_in_get = (req, res, next) => {
-  console.log(req.user);
   res.render("log-in");
 };
 
