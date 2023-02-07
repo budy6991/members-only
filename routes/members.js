@@ -27,14 +27,24 @@ passport.use(
   })
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser((user, done) => {
+  console.log("Serializing user...");
+  console.log(user);
   done(null, user.id);
 });
 
-passport.deserializeUser(function (id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
+passport.deserializeUser(async (id, done) => {
+  console.log("Deserialize user");
+  console.log(`The id is ${id}`);
+  try {
+    const user = await User.findById(id);
+    console.log(user);
+    if (!user) throw new Error("User not found");
+    done(null, user);
+  } catch (err) {
+    console.log(err);
+    done(err, null);
+  }
 });
 
 // Message routes
@@ -56,5 +66,12 @@ router.get("/log-in", user_controller.log_in_get);
 router.post("/log-in", user_controller.log_in_post);
 
 router.get("/log-out", user_controller.log_out);
+
+router.use((req, res, next) => {
+  console.log("Inside Members Only Check Middleware");
+  console.log(`User is ${req.user}`);
+  if (req.user) next();
+  else res.send(401, "User not found");
+});
 
 module.exports = router;
