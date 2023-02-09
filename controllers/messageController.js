@@ -9,11 +9,8 @@ exports.create_message_get = (req, res, next) => {
 };
 
 exports.create_message_post = [
-  body("message_title", "Please write a title")
-    .trim()
-    .isLength({ min: 1 })
-    .escape(),
-  body("message_content", "Please write the message content")
+  body("title", "Please write a title").trim().isLength({ min: 1 }).escape(),
+  body("content", "Please write the message content")
     .isLength({ min: 20 })
     .escape(),
   (req, res, next) => {
