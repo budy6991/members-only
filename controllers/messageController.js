@@ -18,7 +18,6 @@ exports.create_message_post = [
     const errors = validationResult(req);
     User.findById(req.user._id).exec((err, user) => {
       if (err) return next(err);
-      console.log("USER ID IS " + user._id);
       let message = new Message({
         author: user._id,
         title: req.body.title,
