@@ -9,13 +9,21 @@
     <h1>Welcome <%= user.username %></h1>
     <ul>
       <% list_messages.forEach(function(message) { %>
-      <li>title:<%= message.title %> content:<%= message.content %></li>
+      <li>
+        title:<%= message.title %> content:<%= message.content %> Author: <%=
+        undefined === message.author ? 'No author' : message.author.fullname %>
+      </li>
       <% }); %>
     </ul>
     <a href="/create-message">Create a message</a>
     <a href="/log-out">Log out</a>
     <% } else { %>
     <h1>Welcome to Members Only Application</h1>
+    <ul>
+      <% list_messages.forEach(function(message) { %>
+      <li>Title: <%= message.title %> Content: <%= message.content %>A</li>
+      <% }); %>
+    </ul>
     <a href="/log-in">Log in</a>
     <a href="/sign-up">Sign up</a>
     <%}%>
