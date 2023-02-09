@@ -7,6 +7,11 @@
   <body>
     <% if (user) {%>
     <h1>Welcome <%= user.username %></h1>
+    <ul>
+      <% list_messages.forEach(function(message) { %>
+      <li>title:<%= message.title %> content:<%= message.content %></li>
+      <% }); %>
+    </ul>
     <a href="/create-message">Create a message</a>
     <a href="/log-out">Log out</a>
     <% } else { %>

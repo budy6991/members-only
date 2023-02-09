@@ -1,8 +1,11 @@
 const express = require("express");
+const User = require("../models/user");
 const router = express.Router();
 const user_controller = require("../controllers/userController");
 const message_controller = require("../controllers/messageController");
-
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
 // Message routes
 
 router.get("/create-message", message_controller.create_message_get);
@@ -10,6 +13,25 @@ router.get("/create-message", message_controller.create_message_get);
 router.post("/create-message", message_controller.create_message_post);
 
 // User routes
+
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username: username }, (err, user) => {
+      if (err) return done(err);
+      if (!user) return done(null, false, { message: "Incorrect username" });
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (err) return done(err);
+        if (res) return done(null, user);
+        else return done(null, false, { message: "Incorrect Password" });
+      });
+    });
+  })
+);
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) =>
+  User.findById(id, (err, user) => done(err, user))
+);
 
 router.get("/", user_controller.index);
 

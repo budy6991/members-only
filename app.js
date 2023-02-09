@@ -37,7 +37,7 @@ app.use(helmet());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    secret: "keyboard car",
+    secret: "keyboard cat",
     resave: false,
     saveUninitialized: false,
   })
@@ -46,30 +46,9 @@ app.use(passport.authenticate("session"));
 
 // Set up passport
 
-passport.use(
-  new LocalStrategy((username, password, done) => {
-    User.findOne({ username: username }, (err, user) => {
-      if (err) return done(err);
-      if (!user) return done(null, false, { message: "Incorrect username" });
-      bcrypt.compare(password, user.password, (err, res) => {
-        if (err) return done(err);
-        if (res) return done(null, user);
-        else return done(null, false, { message: "Incorrect Password" });
-      });
-    });
-  })
-);
-
 const membersRouter = require("./routes/members");
 
 app.use("/", membersRouter);
-
-// Serialize/ Deserialize user
-
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser((id, done) =>
-  User.findById(id, (err, user) => done(err, user))
-);
 
 // Set up session and initialize passport
 

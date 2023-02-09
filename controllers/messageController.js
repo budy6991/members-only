@@ -25,6 +25,7 @@ exports.create_message_post = [
       content: req.body.content,
       timestamp: req.body.timestamp,
     });
+
     if (!errors.isEmpty()) {
       res.render("message-form");
     }

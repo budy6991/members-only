@@ -7,7 +7,12 @@ const async = require("async");
 const passport = require("passport");
 
 exports.index = (req, res, next) => {
-  res.render("index", { user: req.user });
+  Message.find().exec(function (err, messages_list) {
+    if (err) {
+      return next(err);
+    }
+    res.render("index", { user: req.user, list_messages: messages_list });
+  });
 };
 
 exports.sign_up_get = (req, res, next) => {
