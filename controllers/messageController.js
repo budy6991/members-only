@@ -16,22 +16,24 @@ exports.create_message_post = [
   (req, res, next) => {
     console.log("User is" + req.user);
     const errors = validationResult(req);
-    const message = new Message({
-      author: req.user,
-      title: req.body.title,
-      content: req.body.content,
-      timestamp: req.body.timestamp,
-    });
+    User.findById(req.user._id).exec((err, user) => {
+      if (err) return next(err);
+      console.log("USER ID IS " + user._id);
+      let message = new Message({
+        author: user._id,
+        title: req.body.title,
+        content: req.body.content,
+        timestamp: new Date(),
+      });
 
-    if (!errors.isEmpty()) {
-      res.render("message-form");
-    }
-    message.save((err) => {
-      if (err) {
-        return next(err);
+      if (!errors.isEmpty()) {
+        res.render("message-form");
       }
+      message.save((err) => {
+        if (err) {
+          return next(err);
+        }
+      });
     });
-
-    console.log("USERRRR ISSS" + req.user);
   },
 ];

@@ -5,7 +5,7 @@ const { DateTime } = require("luxon");
 // To add author
 
 const MessageSchema = new Schema({
-  autor: { type: Schema.Types.ObjectId, ref: "User" },
+  author: { type: Schema.Types.ObjectId, ref: "User" },
   title: { type: String, required: true },
   content: { type: String, required: true },
   timestamp: { type: Date },
