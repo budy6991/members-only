@@ -10,8 +10,13 @@
     <ul>
       <% list_messages.forEach(function(message) { %>
       <li>
-        title:<%= message.title %> content:<%= message.content %> Author: <%=
-        undefined === message.author ? 'No author' : message.author.fullname %>
+        <p>title:<%= message.title %></p>
+        <p>content:<%= message.content %></p>
+        Author: <%= undefined === message.author ? 'No author' :
+        message.author.fullname %> <% if (user.membership == 'admin') { %>
+        <button>Edit</button>
+        <button>Remove</button>
+        <% } %>
       </li>
       <% }); %>
     </ul>
