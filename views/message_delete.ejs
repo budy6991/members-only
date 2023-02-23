@@ -13,7 +13,7 @@
         <p><%=message.content %></p>
       <h2>Author: </h2>
       <p>
-        <%=message.author.fullname %>
+        <%= undefined === message.author ? 'No author' : message.author.fullname %>
       </p>
       <h2>Created in: </h2>
       <p>
