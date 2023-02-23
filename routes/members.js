@@ -45,4 +45,6 @@ router.post("/log-in", user_controller.log_in_post);
 
 router.get("/log-out", user_controller.log_out);
 
+router.get("/:id/delete", message_controller.delete_message_get);
+
 module.exports = router;

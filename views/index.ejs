@@ -16,9 +16,9 @@
         message.author.fullname %> <% if (user.membership == 'admin') { %>
         <div class="buttons-container">
           <button>
-            <a href="<%=`${message.url}/delete`%>"></a>
+            <a href="<%=`/${message.url}/delete`%>">Delete</a>
           </button>
-          <button>Remove</button>
+          <button>Edit</button>
         </div>
         <% } %>
       </li>
