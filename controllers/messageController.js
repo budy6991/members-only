@@ -52,5 +52,10 @@ exports.delete_message_get = (req, res, next) => {
 };
 
 exports.delete_message_post = (req, res, next) => {
-  console.log(req.body.messageId);
+  Message.findByIdAndRemove(req.body.messageId, (err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
 };
