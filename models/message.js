@@ -11,6 +11,10 @@ const MessageSchema = new Schema({
   timestamp: { type: Date },
 });
 
+MessageSchema.virtual("url").get(function () {
+  return `${this._id}`;
+});
+
 MessageSchema.virtual("timestamp_formatted").get(function () {
   return DateTime.fromJSDate(this.timestamp).toISODate();
 });

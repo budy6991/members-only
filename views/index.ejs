@@ -14,8 +14,12 @@
         <p>content:<%= message.content %></p>
         Author: <%= undefined === message.author ? 'No author' :
         message.author.fullname %> <% if (user.membership == 'admin') { %>
-        <button>Edit</button>
-        <button>Remove</button>
+        <div class="buttons-container">
+          <button>
+            <a href="<%=`${message.url}/delete`%>"></a>
+          </button>
+          <button>Remove</button>
+        </div>
         <% } %>
       </li>
       <% }); %>

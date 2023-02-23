@@ -37,3 +37,18 @@ exports.create_message_post = [
     });
   },
 ];
+
+exports.delete_message_get = (req, res, next) => {
+  Message.findById(req.params.id).exec((err, message) => {
+    if (err) {
+      return next(err);
+    }
+    res.render("message_delete", {
+      message: message,
+    });
+  });
+};
+
+exports.delete_message_post = (req, res, next) => {
+  console.log(req.body);
+};
