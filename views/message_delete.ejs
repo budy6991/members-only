@@ -7,22 +7,28 @@
   <body>
     <h2>Are you sure you want to delete the following message?</h2>
     <div class="message-delete">
-      <h2>Title: </h1>
-        <p><%=message.title %></p>
+      <h2>Title:</h2>
+      <p><%=message.title %></p>
       <h2>Content:</h2>
-        <p><%=message.content %></p>
-      <h2>Author: </h2>
+      <p><%=message.content %></p>
+      <h2>Author:</h2>
       <p>
-        <%= undefined === message.author ? 'No author' : message.author.fullname %>
+        <%= undefined === message.author ? 'No author' : message.author.fullname
+        %>
       </p>
-      <h2>Created in: </h2>
-      <p>
-        <%=message.timestamp_formatted %>
-      </p>
+      <h2>Created in:</h2>
+      <p><%=message.timestamp_formatted %></p>
     </div>
     <form method="POST" action="">
-        <input type="hidden", name="messageId", required="true", value=<%=message._id%>>
-        <button type="submit">Delete</button>
+      <input
+        type="hidden"
+        ,
+        name="messageId"
+        ,
+        required="true"
+        value="<%= message._id %>"
+      />
+      <button type="submit">Delete</button>
     </form>
   </body>
 </html>

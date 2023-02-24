@@ -6,6 +6,8 @@ const message_controller = require("../controllers/messageController");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+const UserVerification = require("../models/userOTPVerification");
 // Message routes
 
 router.get("/create-message", message_controller.create_message_get);
@@ -27,6 +29,18 @@ passport.use(
     });
   })
 );
+
+const sendOTPVerificationEmail = async ({ _id, email }) => {
+  try {
+    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
+
+    // mail options
+    const mailOptions = {
+      from: process.env.EMAIL_SENDER,
+      to: email,
+    };
+  } catch (err) {}
+};
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) =>
