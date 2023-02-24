@@ -27,7 +27,7 @@ const sendOTPVerificationEmail = async (_id, email) => {
       from: process.env.EMAIL_SENDER,
       to: email,
       subject: "Verify Your Email",
-      text: "Hello world",
+      html: `<h2>Welcome to Members Only Application</h2> <p>Here is your verification code: <b>${otp}</b></p> <p>The code will be available for <b>1 hour.</b></p>`,
     };
 
     // hash the otp
