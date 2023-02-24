@@ -38,7 +38,31 @@ const sendOTPVerificationEmail = async ({ _id, email }) => {
     const mailOptions = {
       from: process.env.EMAIL_SENDER,
       to: email,
+      subject: "Verify Your Email",
+      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and become a member</p>`,
     };
+
+    // hash the otp
+    const saltRounds = 10;
+    const hashedOTP = await bcrypt.hash(otp, saltRounds);
+
+    const newOTPVerification = new UserOTPVerification({
+      userId: _id,
+      otp: hashedOTP,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 3600000,
+    });
+
+    await newOTPVerification.save();
+    await transporter.sendMail(mailOptions);
+    res.json({
+      status: "PENDING",
+      message: "Verification otp email sent",
+      data: {
+        userId: _id,
+        email,
+      },
+    });
   } catch (err) {}
 };
 
