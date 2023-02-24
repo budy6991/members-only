@@ -1,3 +1,4 @@
+require("dotenv").config();
 const User = require("../models/user");
 const Message = require("../models/message");
 const { body, validationResult, check } = require("express-validator");
@@ -6,7 +7,13 @@ const bcrypt = require("bcryptjs");
 const async = require("async");
 const passport = require("passport");
 const nodemailer = require("nodemailer");
-// const transporter = nodemailer.createTransport();
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_SENDER,
+    pass: process.env.EMAIL_CR,
+  },
+});
 const UserOTPVerification = require("../models/userOTPVerification");
 
 const sendOTPVerificationEmail = async ({ _id, email }) => {
@@ -34,19 +41,23 @@ const sendOTPVerificationEmail = async ({ _id, email }) => {
 
     await newOTPVerification.save();
     await transporter.sendMail(mailOptions);
-    res.json({
-      status: "PENDING",
-      message: "Verification otp email sent",
-      data: {
-        userId: _id,
-        email,
-      },
-    });
+    (req, res, next) => {
+      res.json({
+        status: "PENDING",
+        message: "Verification otp email sent",
+        data: {
+          userId: _id,
+          email,
+        },
+      });
+    };
   } catch (err) {
-    res.json({
-      status: "FAILED",
-      message: error.message,
-    });
+    (req, res, next) => {
+      res.json({
+        status: "FAILED",
+        message: error.message,
+      });
+    };
   }
 };
 
@@ -80,6 +91,7 @@ exports.sign_up_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
+  body("email", "Email is required").trim().isLength({ min: 1 }).escape(),
   body("password", "Password is required").trim().isLength({ min: 5 }).escape(),
   (req, res, next) => {
     const errors = validationResult(req);
@@ -91,6 +103,7 @@ exports.sign_up_post = [
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         username: req.body.username,
+        email: req.body.email,
         password: hashedPassword,
         membership: "user",
       });
@@ -106,12 +119,15 @@ exports.sign_up_post = [
         if (err) {
           return next(err);
         }
-        sendOTPVerificationEmail(user._id);
         res.redirect("/");
       });
     });
   },
 ];
+
+exports.membership_get = (req, res, next) => {
+  console.log(req.user);
+};
 
 exports.log_in_get = (req, res, next) => {
   res.render("log-in");

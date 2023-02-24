@@ -50,4 +50,6 @@ router.get("/:id/delete", message_controller.delete_message_get);
 
 router.post("/:id/delete", message_controller.delete_message_post);
 
+router.get("/membership", user_controller.membership_get);
+
 module.exports = router;
