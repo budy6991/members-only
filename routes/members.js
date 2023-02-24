@@ -6,8 +6,7 @@ const message_controller = require("../controllers/messageController");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-const UserVerification = require("../models/userOTPVerification");
+
 // Message routes
 
 router.get("/create-message", message_controller.create_message_get);
@@ -29,42 +28,6 @@ passport.use(
     });
   })
 );
-
-const sendOTPVerificationEmail = async ({ _id, email }) => {
-  try {
-    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
-
-    // mail options
-    const mailOptions = {
-      from: process.env.EMAIL_SENDER,
-      to: email,
-      subject: "Verify Your Email",
-      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and become a member</p>`,
-    };
-
-    // hash the otp
-    const saltRounds = 10;
-    const hashedOTP = await bcrypt.hash(otp, saltRounds);
-
-    const newOTPVerification = new UserOTPVerification({
-      userId: _id,
-      otp: hashedOTP,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 3600000,
-    });
-
-    await newOTPVerification.save();
-    await transporter.sendMail(mailOptions);
-    res.json({
-      status: "PENDING",
-      message: "Verification otp email sent",
-      data: {
-        userId: _id,
-        email,
-      },
-    });
-  } catch (err) {}
-};
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser((id, done) =>

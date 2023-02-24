@@ -5,6 +5,50 @@ const flash = require("express-flash-messages");
 const bcrypt = require("bcryptjs");
 const async = require("async");
 const passport = require("passport");
+const nodemailer = require("nodemailer");
+// const transporter = nodemailer.createTransport();
+const UserOTPVerification = require("../models/userOTPVerification");
+
+const sendOTPVerificationEmail = async ({ _id, email }) => {
+  try {
+    const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
+
+    // mail options
+    const mailOptions = {
+      from: process.env.EMAIL_SENDER,
+      to: email,
+      subject: "Verify Your Email",
+      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and become a member</p>`,
+    };
+
+    // hash the otp
+    const saltRounds = 10;
+    const hashedOTP = await bcrypt.hash(otp, saltRounds);
+
+    const newOTPVerification = new UserOTPVerification({
+      userId: _id,
+      otp: hashedOTP,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 3600000,
+    });
+
+    await newOTPVerification.save();
+    await transporter.sendMail(mailOptions);
+    res.json({
+      status: "PENDING",
+      message: "Verification otp email sent",
+      data: {
+        userId: _id,
+        email,
+      },
+    });
+  } catch (err) {
+    res.json({
+      status: "FAILED",
+      message: error.message,
+    });
+  }
+};
 
 exports.index = (req, res, next) => {
   Message.find()
@@ -62,6 +106,7 @@ exports.sign_up_post = [
         if (err) {
           return next(err);
         }
+        sendOTPVerificationEmail(user._id);
         res.redirect("/");
       });
     });
