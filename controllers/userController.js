@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 });
 const UserOTPVerification = require("../models/userOTPVerification");
 
-const sendOTPVerificationEmail = async ({ _id, email }) => {
+const sendOTPVerificationEmail = async (_id, email) => {
   try {
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -29,8 +29,6 @@ const sendOTPVerificationEmail = async ({ _id, email }) => {
       subject: "Verify Your Email",
       text: "Hello world",
     };
-
-    console.log("EMAIL HERE", email);
 
     // hash the otp
     const saltRounds = 10;
@@ -136,7 +134,6 @@ exports.sign_up_post = [
 ];
 
 exports.membership_get = (req, res, next) => {
-  console.log(typeof req.user.email);
   sendOTPVerificationEmail(req.user._id, req.user.email);
 
   res.render("membership-form");
