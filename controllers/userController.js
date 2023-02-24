@@ -8,7 +8,9 @@ const async = require("async");
 const passport = require("passport");
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  service: "Gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_SENDER,
     pass: process.env.EMAIL_CR,
@@ -25,8 +27,10 @@ const sendOTPVerificationEmail = async ({ _id, email }) => {
       from: process.env.EMAIL_SENDER,
       to: email,
       subject: "Verify Your Email",
-      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and become a member</p>`,
+      text: "Hello world",
     };
+
+    console.log("EMAIL HERE", email);
 
     // hash the otp
     const saltRounds = 10;
@@ -40,7 +44,13 @@ const sendOTPVerificationEmail = async ({ _id, email }) => {
     });
 
     await newOTPVerification.save();
-    await transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Success");
+      }
+    });
     (req, res, next) => {
       res.json({
         status: "PENDING",
@@ -126,8 +136,13 @@ exports.sign_up_post = [
 ];
 
 exports.membership_get = (req, res, next) => {
-  console.log(req.user);
+  console.log(typeof req.user.email);
+  sendOTPVerificationEmail(req.user._id, req.user.email);
+
+  res.render("membership-form");
 };
+
+exports.membership_post = () => {};
 
 exports.log_in_get = (req, res, next) => {
   res.render("log-in");
