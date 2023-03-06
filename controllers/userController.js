@@ -34,7 +34,7 @@ const sendOTPVerificationEmail = async (_id, email) => {
     const saltRounds = 10;
     const hashedOTP = await bcrypt.hash(otp, saltRounds);
 
-    const newOTPVerification = new UserOTPVerification({
+    const newOTPVerification = await new UserOTPVerification({
       userId: _id,
       otp: hashedOTP,
       createdAt: Date.now(),
@@ -139,7 +139,47 @@ exports.membership_get = (req, res, next) => {
   res.render("membership-form");
 };
 
-exports.membership_post = () => {};
+exports.verify_otp = async (req, res, next) => {
+  try {
+    let { userId, otp } = req.body;
+    if (!userId || !otp) {
+      throw Error("Emtpy otp details are not allowed");
+    } else {
+      const UserOTPVerificationRecords = await UserOTPVerification.find({
+        userId,
+      });
+      if (UserOTPVerificationRecords.length <= 0) {
+        throw new Error(
+          "Account record doesnt exist of has been verified already. Please sign up or log in"
+        );
+      } else {
+        const { expiresAt } = UserOTPVerificationRecords[0];
+        const hashedOTP = UserOTPVerificationRecords[0].otp;
+        if (expiresAt < Date.now()) {
+          await UserOTPVerification.deleteMany({ userId });
+          throw new Error("Code has expired. Please request again");
+        } else {
+          const validOTP = await bcrypt.compare(otp, hashedOTP);
+          if (!validOTP) {
+            throw new Error("Invalid code passed. Check your index");
+          } else {
+            await User.updateOne({ _id: userId }, { membership: "member" });
+            UserOTPVerification.deleteMany({ userID });
+            res.json({
+              status: "VERIFIED",
+              message: "User email verified successfully",
+            });
+          }
+        }
+      }
+    }
+  } catch (error) {
+    res.json({
+      status: "FAILED",
+      message: error.message,
+    });
+  }
+};
 
 exports.log_in_get = (req, res, next) => {
   res.render("log-in");
