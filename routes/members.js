@@ -52,6 +52,6 @@ router.post("/:id/delete", message_controller.delete_message_post);
 
 router.get("/membership", user_controller.membership_get);
 
-router.post("membership", user_controller.verify_otp);
+router.post("/membership", user_controller.verify_otp);
 
 module.exports = router;

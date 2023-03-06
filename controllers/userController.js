@@ -140,8 +140,10 @@ exports.membership_get = (req, res, next) => {
 };
 
 exports.verify_otp = async (req, res, next) => {
+  console.log(req.user);
   try {
-    let { userId, otp } = req.body;
+    let { otp } = req.body;
+    let userId = req.user._id;
     if (!userId || !otp) {
       throw Error("Emtpy otp details are not allowed");
     } else {
@@ -159,7 +161,10 @@ exports.verify_otp = async (req, res, next) => {
           await UserOTPVerification.deleteMany({ userId });
           throw new Error("Code has expired. Please request again");
         } else {
+          //HashedOTP not working, probably not being reached.
+          console.log("HERE" + " " + otp, hashedOTP);
           const validOTP = await bcrypt.compare(otp, hashedOTP);
+
           if (!validOTP) {
             throw new Error("Invalid code passed. Check your index");
           } else {
